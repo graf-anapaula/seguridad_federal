@@ -1,0 +1,125 @@
+---
+title: "Delitos en México"
+subtitle: "Análisis de los delitos en México"
+author: "Ana Paula Graf"
+date: "2020/09/14"
+output:
+  
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      countIncrementalSlides: false
+      ratio: '16:9'
+    css: style.css
+    self_contained: true
+params:
+  delito: "Homicidio"
+editor_options: 
+  chunk_output_type: console
+---
+
+--
+.justify[
+Para abordar análisis de los datos públicos que el gobierno federal publica mensualmente, se siguió una serie de pasos los cuales constaron de una limpieza de datos y visualizaciones que se creyeron relevantes para su estudio.
+En la siguiente tabla podemos ver los datos limpios con los cuales se trabajaron:
+]
+--
+
+
+```{r Lectura, echo=FALSE, fig.height=2, fig.width=8, message=FALSE}
+mode(data.frame(a = 1)['a'])
+
+options(tidyverse.quiet = T)
+options(lubridate.quiet = T)
+library(tidyverse)
+library(lubridate)
+library(extrafont)
+loadfonts()
+#seguridad_valores <- read_csv('../../data/interim/seguridad_valores.csv')
+
+seguridad_valores <- read_csv(here::here('data', 'interim', 'seguridad_valores.csv'))
+delito <- params$delito
+
+seguridad_valores %>% 
+  count(year(fecha), entidad, tipo_de_delito) %>% 
+  filter(tipo_de_delito == delito)
+
+```
+
+---
+### Serie de tiempo
+<font style="font-family: Garamond">
+Posterior a la carga y limpieza de datos se hicieron las siguientes visualizaciones:
+</font>
+
+
+```{r viz inicial, echo=FALSE, fig.align='center', fig.height=6, fig.width=11, message=FALSE,fig.retina=2}
+
+homicidios_nacional <- seguridad_valores %>% 
+  count(fecha, tipo_de_delito) %>% 
+  filter(tipo_de_delito == delito)
+
+homicidios_nacional %>% 
+  ggplot() +
+    aes(fecha, n) +
+    geom_line() +
+    geom_smooth(aes(color = "loess"), method = "loess", se = FALSE) +
+    xlab("Tiempo") + ylab(NULL) +
+    ggtitle(str_c(delito, " en México"), subtitle = "De enero 2015 a julio 2020") +
+    theme_light() +
+    scale_y_continuous(labels = scales::comma) +
+    theme(text = element_text(size = 20, family = "Garamond")) 
+
+```
+
+--
+.justify[
+<font style="font-family: Garamond">
+La gráfica anterior refleja los datos en una serie de tiempo en la que podemos ver los cambios de `r toString(delito)` con respecto al tiempo. Los datos se toman en cuenta desde Enero 2015 hasta Julio 2020.
+</font>
+]
+---
+### Cambio en los casos reportados por mes
+```{r echo=FALSE, fig.height= 7, fig.width= 9, fig.align='center', fig.retina=2.5}
+homicidios_nacional %>% 
+  mutate(mes = month(fecha, label = T)) %>% 
+  ggplot() +
+  aes(fecha, n) +
+  facet_wrap(vars(mes)) +
+  geom_vline(xintercept = ymd('2018-12-01'), color = "red") +
+  geom_line(aes(x = fecha, y = n)) +
+  theme_light() +
+  theme(text = element_text(size = 20, family = "Garamond")) +
+  ylab("Número de casos reportados") +xlab("Mes")
+
+```
+
+--
+
+<font style="font-family: Garamond>
+.justify[
+En la gráfica anterior, se muestran los cambios de `r toString(delito)` en México por mes.
+]
+</font>
+
+---
+### Reporte de delitos por estado
+.justify[
+Después de analizar el cambio de `r toString(delito)` en el tiempo, sería interesante compararlo con el comportamiento del total de delitos por estado.
+]
+```{r echo=FALSE, fig.height= 6, fig.width= 8, fig.align='center'}
+seguridad_valores %>% 
+  filter(month(fecha) %in% 1:6) %>% 
+  count(anio = year(fecha), entidad) %>% 
+  # filter(n > 10000) %>% 
+  ggplot(aes(anio, n)) +
+  geom_bar(stat = "identity", fill = "dark green") +
+  xlab("Tiempo (años)") + ylab(NULL) +
+  ggtitle("Casos de delitos por semestre desde Enero 2015") +
+  theme_light() +
+  theme(text = element_text(size = 20, family = "Garamond")) +
+  scale_y_continuous(labels = scales::comma)
+
+
+```

@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Montserrat:wght@100&display=swap');
+
+.inverse {
+    background-color: #1d3557;
+    color: #d6d6d6;
+    text-shadow: 0 0 20px #333;
+    font-family: 'roboto-condensed', sans-serif;
+}
+
+
+p {
+    font-family: 'EB Garamond', serif;
+    font-size: 18pt;
+}
+
+h1, h2, h3 {
+    font-family: 'EB Garamond', serif;
+}
