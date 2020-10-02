@@ -45,7 +45,7 @@ seguridad_valores %>%
   count(year(fecha), entidad, tipo_de_delito) %>% 
   filter(tipo_de_delito == delito)
 
-graph_fonts <- params$graph_font
+graph_fonts <- params$graph_fonts
 ```
 
 ---
