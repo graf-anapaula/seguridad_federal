@@ -26,11 +26,10 @@ seguridad_clean <- seguridad %>%
   unite(fecha, ano, mes, sep = "/") %>%
   mutate(fecha = parse_date(fecha, '%Y/%B', locale = locale("es")))
 
-
 seguridad_valores <- seguridad_clean %>%
   filter(total != 0)
 
-write_csv(seguridad_clean, 'data/interim/seguridad_clean.csv')
+data.table::fwrite(seguridad_clean, 'data/interim/seguridad_clean.csv')
 data.table::fwrite(seguridad_valores, 'data/interim/seguridad_valores.csv')
 
 # Primera exploración de datos ####

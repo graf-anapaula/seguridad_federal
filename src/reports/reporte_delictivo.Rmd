@@ -4,7 +4,6 @@ subtitle: "Análisis de los delitos en México"
 author: "Ana Paula Graf"
 date: "2020/09/14"
 output:
-  
   xaringan::moon_reader:
     lib_dir: libs
     nature:
@@ -15,6 +14,7 @@ output:
     self_contained: true
 params:
   delito: "Homicidio"
+  graph_fonts: 'Garamond' 
 editor_options: 
   chunk_output_type: console
 ---
@@ -45,6 +45,7 @@ seguridad_valores %>%
   count(year(fecha), entidad, tipo_de_delito) %>% 
   filter(tipo_de_delito == delito)
 
+graph_fonts <- params$graph_font
 ```
 
 ---
@@ -55,7 +56,6 @@ Posterior a la carga y limpieza de datos se hicieron las siguientes visualizacio
 
 
 ```{r viz inicial, echo=FALSE, fig.align='center', fig.height=6, fig.width=11, message=FALSE,fig.retina=2}
-
 homicidios_nacional <- seguridad_valores %>% 
   count(fecha, tipo_de_delito) %>% 
   filter(tipo_de_delito == delito)
@@ -69,7 +69,10 @@ homicidios_nacional %>%
     ggtitle(str_c(delito, " en México"), subtitle = "De enero 2015 a julio 2020") +
     theme_light() +
     scale_y_continuous(labels = scales::comma) +
-    theme(text = element_text(size = 20, family = "Garamond")) 
+    theme(text = element_text(size = 20, family = graph_fonts)) 
+
+
+
 
 ```
 
@@ -90,7 +93,7 @@ homicidios_nacional %>%
   geom_vline(xintercept = ymd('2018-12-01'), color = "red") +
   geom_line(aes(x = fecha, y = n)) +
   theme_light() +
-  theme(text = element_text(size = 20, family = "Garamond")) +
+  theme(text = element_text(size = 20, family = graph_fonts)) +
   ylab("Número de casos reportados") +xlab("Mes")
 
 ```
@@ -118,7 +121,7 @@ seguridad_valores %>%
   xlab("Tiempo (años)") + ylab(NULL) +
   ggtitle("Casos de delitos por semestre desde Enero 2015") +
   theme_light() +
-  theme(text = element_text(size = 20, family = "Garamond")) +
+  theme(text = element_text(size = 20, family = graph_fonts)) +
   scale_y_continuous(labels = scales::comma)
 
 
